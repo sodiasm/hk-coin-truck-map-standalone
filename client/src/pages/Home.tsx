@@ -165,6 +165,15 @@ export default function Home() {
               <span className="text-muted-foreground">{t("兩輛同時服務中", "Both Active Today")}</span>
             </div>
             <div className="flex items-center gap-1.5">
+              <span
+                className="w-4 h-3 rounded inline-block border border-blue-400"
+                style={{
+                  background: "repeating-linear-gradient(45deg, #bfdbfe 0px, #bfdbfe 2px, #eff6ff 2px, #eff6ff 6px)",
+                }}
+              />
+              <span className="text-muted-foreground">{t("今日暫停", "Closed Today")}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
               <span className="w-4 h-3 rounded inline-block" style={{ background: "#4ade80", opacity: 0.3 }} />
               <span className="text-muted-foreground">{t("暫無服務", "No Service")}</span>
             </div>

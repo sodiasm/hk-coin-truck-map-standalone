@@ -20,3 +20,4 @@
 - [x] Write vitest tests (14 tests passing)
 - [x] Final checkpoint and delivery
 - [x] Fix map: highlight districts only when truck is actively serving TODAY (not upcoming/past)
+- [x] Map: show distinct hatched/striped visual for districts scheduled but closed today
