@@ -1,8 +1,10 @@
 export const ENV = {
-  cookieSecret: process.env.JWT_SECRET ?? "change-me-in-production",
+  appId: process.env.VITE_APP_ID ?? "",
+  cookieSecret: process.env.JWT_SECRET ?? "",
   databaseUrl: process.env.DATABASE_URL ?? "",
-  /** Plain token used to authenticate admin API calls. Set via ADMIN_TOKEN env var. */
-  adminToken: process.env.ADMIN_TOKEN ?? "change-me-admin-token",
+  oAuthServerUrl: process.env.OAUTH_SERVER_URL ?? "",
+  ownerOpenId: process.env.OWNER_OPEN_ID ?? "",
   isProduction: process.env.NODE_ENV === "production",
-  port: parseInt(process.env.PORT ?? "3000"),
+  forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
+  forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
 };
