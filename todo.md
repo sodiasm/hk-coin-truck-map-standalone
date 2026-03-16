@@ -1,0 +1,21 @@
+# 香港收銀車服務地圖 — Project TODO
+
+- [x] Install Leaflet.js and react-leaflet dependencies
+- [x] Define DB schema: truck_schedules table with truck_number, district, location_name, address, date_from, date_to, closed_days, is_lcsd_library, notes
+- [x] Run DB migration
+- [x] Build server/db.ts helpers for schedule queries
+- [x] Build tRPC routers: public schedule queries + admin CRUD procedures
+- [x] Seed HKMA Jan–May 2026 schedule data (Truck 1 & 2, 52 entries)
+- [x] Build HK 18-district Leaflet map with GeoJSON boundaries (from CSDI portal)
+- [x] Map interactions: hover shows district name + truck info, click filters schedule panel
+- [x] Color-coded district polygons (blue=Truck1, amber=Truck2, purple=both, green=no service)
+- [x] Public schedule view: current week + upcoming, filterable by district/date range
+- [x] Service location detail panel with address, hours, LCSD notes, closed-day warnings
+- [x] Admin panel: role-gated CRUD for truck schedules (create, edit, delete)
+- [x] Admin stats dashboard (total, per truck, active today counts)
+- [x] Bilingual UI (Traditional Chinese + English) with language toggle
+- [x] Responsive design with mobile map/list tab switcher
+- [x] HKMA-inspired green + gold design theme
+- [x] Map legend
+- [x] Write vitest tests (14 tests passing)
+- [x] Final checkpoint and delivery

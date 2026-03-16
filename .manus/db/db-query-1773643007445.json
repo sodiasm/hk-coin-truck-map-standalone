@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE `truck_schedules` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`truck_number` int NOT NULL,\n\t`district_code` varchar(10) NOT NULL,\n\t`district_name_tc` varchar(30) NOT NULL,\n\t`district_name_en` varchar(80) NOT NULL,\n\t`location_name_tc` varchar(200) NOT NULL,\n\t`location_name_en` varchar(200),\n\t`address_tc` varchar(300),\n\t`date_from` date NOT NULL,\n\t`date_to` date NOT NULL,\n\t`closed_dates` text,\n\t`is_lcsd_library` boolean NOT NULL DEFAULT false,\n\t`notes_tc` text,\n\t`notes_en` text,\n\t`created_at` timestamp NOT NULL DEFAULT (now()),\n\t`updated_at` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `truck_schedules_id` PRIMARY KEY(`id`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3VxrfmgP2FDaT3H.root --database T4yQXCmCZYWLup5sV59fQM --execute CREATE TABLE `truck_schedules` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`truck_number` int NOT NULL,\n\t`district_code` varchar(10) NOT NULL,\n\t`district_name_tc` varchar(30) NOT NULL,\n\t`district_name_en` varchar(80) NOT NULL,\n\t`location_name_tc` varchar(200) NOT NULL,\n\t`location_name_en` varchar(200),\n\t`address_tc` varchar(300),\n\t`date_from` date NOT NULL,\n\t`date_to` date NOT NULL,\n\t`closed_dates` text,\n\t`is_lcsd_library` boolean NOT NULL DEFAULT false,\n\t`notes_tc` text,\n\t`notes_en` text,\n\t`created_at` timestamp NOT NULL DEFAULT (now()),\n\t`updated_at` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `truck_schedules_id` PRIMARY KEY(`id`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1952
+}
