@@ -1,5 +1,6 @@
 import {
   boolean,
+  double,
   int,
   mysqlEnum,
   mysqlTable,
@@ -72,6 +73,12 @@ export const truckSchedules = mysqlTable("truck_schedules", {
 
   /** Additional notes in English */
   notesEn: text("notes_en"),
+
+  /** GPS latitude (WGS84) — geocoded from addressTc via Nominatim */
+  lat: double("lat"),
+
+  /** GPS longitude (WGS84) — geocoded from addressTc via Nominatim */
+  lng: double("lng"),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),

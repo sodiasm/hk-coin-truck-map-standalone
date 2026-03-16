@@ -21,3 +21,7 @@
 - [x] Final checkpoint and delivery
 - [x] Fix map: highlight districts only when truck is actively serving TODAY (not upcoming/past)
 - [x] Map: show distinct hatched/striped visual for districts scheduled but closed today
+- [x] Add lat/lng columns to truck_schedules table
+- [x] Geocode all 52 service locations via Nominatim and update DB
+- [x] Add custom truck-coloured pin markers to Leaflet map with popups
+- [x] Change default date filter from "today → +30 days" to "today → today"

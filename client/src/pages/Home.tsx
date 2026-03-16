@@ -12,19 +12,13 @@ import { Loader2, Map, List, Settings } from "lucide-react";
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
-function getWeekEnd(from: string) {
-  const d = new Date(from + "T00:00:00");
-  d.setDate(d.getDate() + 30);
-  return d.toISOString().slice(0, 10);
-}
-
 export default function Home() {
   const { lang, setLang, t } = useLang();
   const { user } = useAuth();
 
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
   const [dateFrom, setDateFrom] = useState(TODAY);
-  const [dateTo, setDateTo] = useState(getWeekEnd(TODAY));
+  const [dateTo, setDateTo] = useState(TODAY);
   const [mobileView, setMobileView] = useState<"map" | "list">("map");
 
   // Fetch all schedules (for map coloring)
@@ -44,7 +38,7 @@ export default function Home() {
   const handleReset = () => {
     setSelectedDistrict(null);
     setDateFrom(TODAY);
-    setDateTo(getWeekEnd(TODAY));
+    setDateTo(TODAY);
   };
 
   return (

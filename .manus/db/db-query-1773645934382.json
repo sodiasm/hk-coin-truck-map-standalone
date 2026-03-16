@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE `truck_schedules` ADD `lat` double;\nALTER TABLE `truck_schedules` ADD `lng` double;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3VxrfmgP2FDaT3H.root --database T4yQXCmCZYWLup5sV59fQM --execute ALTER TABLE `truck_schedules` ADD `lat` double;\nALTER TABLE `truck_schedules` ADD `lng` double;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 3200
+}
