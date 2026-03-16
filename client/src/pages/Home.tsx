@@ -151,18 +151,18 @@ export default function Home() {
 
           {/* Map legend */}
           <div className="absolute bottom-6 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-2.5 z-[1000] text-xs space-y-1.5 border">
-            <p className="font-semibold text-foreground mb-1">{t("圖例", "Legend")}</p>
+            <p className="font-semibold text-foreground mb-1">{t("今日圖例", "Today's Legend")}</p>
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-3 rounded inline-block" style={{ background: "#3b82f6", opacity: 0.7 }} />
-              <span className="text-muted-foreground">{t("收銀車 1 號", "Truck 1")}</span>
+              <span className="text-muted-foreground">{t("收銀車 1 號服務中", "Truck 1 Active")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-3 rounded inline-block" style={{ background: "#f59e0b", opacity: 0.7 }} />
-              <span className="text-muted-foreground">{t("收銀車 2 號", "Truck 2")}</span>
+              <span className="text-muted-foreground">{t("收銀車 2 號服務中", "Truck 2 Active")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-3 rounded inline-block" style={{ background: "#8b5cf6", opacity: 0.7 }} />
-              <span className="text-muted-foreground">{t("兩輛同時", "Both Trucks")}</span>
+              <span className="text-muted-foreground">{t("兩輛同時服務中", "Both Active Today")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-3 rounded inline-block" style={{ background: "#4ade80", opacity: 0.3 }} />

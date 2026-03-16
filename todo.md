@@ -19,3 +19,4 @@
 - [x] Map legend
 - [x] Write vitest tests (14 tests passing)
 - [x] Final checkpoint and delivery
+- [x] Fix map: highlight districts only when truck is actively serving TODAY (not upcoming/past)

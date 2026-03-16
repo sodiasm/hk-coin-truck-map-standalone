@@ -29,17 +29,21 @@ export default function HKMap({ schedules, selectedDistrict, onDistrictClick, la
   const leafletMap = useRef<L.Map | null>(null);
   const geoLayerRef = useRef<L.GeoJSON | null>(null);
 
-  // Compute which districts have active trucks today/upcoming (within 7 days)
+  // Compute which districts have trucks actively serving TODAY only
+  // A schedule is "active today" when: dateFrom <= today <= dateTo
+  // AND today is not in the closedDates list
   const activeDistricts = new Map<string, Set<number>>();
-  const soon = new Date(todayStr);
-  soon.setDate(soon.getDate() + 7);
-  const soonStr = soon.toISOString().slice(0, 10);
 
   for (const s of schedules) {
-    if (s.dateTo >= todayStr && s.dateFrom <= soonStr) {
-      if (!activeDistricts.has(s.districtCode)) activeDistricts.set(s.districtCode, new Set());
-      activeDistricts.get(s.districtCode)!.add(s.truckNumber);
-    }
+    const isToday = s.dateFrom <= todayStr && s.dateTo >= todayStr;
+    if (!isToday) continue;
+    // Check if today is a closed date
+    const closedList = s.closedDates ? s.closedDates.split(",").map(d => d.trim()) : [];
+    if (closedList.includes(todayStr)) continue;
+    // Also skip suspended entries
+    if (s.locationNameTc.includes("暫停")) continue;
+    if (!activeDistricts.has(s.districtCode)) activeDistricts.set(s.districtCode, new Set());
+    activeDistricts.get(s.districtCode)!.add(s.truckNumber);
   }
 
   useEffect(() => {
