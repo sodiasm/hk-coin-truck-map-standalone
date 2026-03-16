@@ -93,6 +93,8 @@ export default function Home() {
       </header>
 
       {/* ── Filter Bar ── */}
+      {/* relative + z-[1200] ensures the Radix portal dropdown renders above Leaflet's z-index ~400 */}
+      <div className="relative z-[1200] shrink-0">
       <FilterBar
         selectedDistrict={selectedDistrict}
         onDistrictChange={setSelectedDistrict}
@@ -102,6 +104,7 @@ export default function Home() {
         onDateToChange={setDateTo}
         onReset={handleReset}
       />
+      </div>
 
       {/* ── Mobile tab switcher ── */}
       <div className="sm:hidden flex border-b bg-card shrink-0">
@@ -168,7 +171,7 @@ export default function Home() {
               <span className="text-muted-foreground">{t("今日暫停", "Closed Today")}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-4 h-3 rounded inline-block" style={{ background: "#4ade80", opacity: 0.3 }} />
+              <span className="w-4 h-3 rounded inline-block border border-slate-300" style={{ background: "transparent" }} />
               <span className="text-muted-foreground">{t("暫無服務", "No Service")}</span>
             </div>
           </div>

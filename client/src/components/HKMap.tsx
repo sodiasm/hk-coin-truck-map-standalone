@@ -36,7 +36,7 @@ function injectHatchPatterns(map: L.Map) {
 
 // ── District polygon styles ─────────────────────────────────────────────────
 const DISTRICT_STYLE = {
-  base:       { fillColor: "#4ade80", fillOpacity: 0.15, color: "#166534", weight: 1.5, opacity: 0.7 },
+  base:       { fillColor: "transparent", fillOpacity: 0, color: "#94a3b8", weight: 1, opacity: 0.5 },
   hover:      { fillColor: "#22c55e", fillOpacity: 0.35, color: "#14532d", weight: 2.5, opacity: 1 },
   selected:   { fillColor: "#16a34a", fillOpacity: 0.55, color: "#14532d", weight: 2.5, opacity: 1 },
   truck1:     { fillColor: "#3b82f6", fillOpacity: 0.30, color: "#1e3a8a", weight: 2,   opacity: 0.9 },

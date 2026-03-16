@@ -36,7 +36,7 @@ export default function FilterBar({
         <SelectTrigger className="h-8 w-40 text-xs">
           <SelectValue placeholder={t("選擇地區", "Select District")} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="z-[1100]">
           <SelectItem value="all">{t("全部地區", "All Districts")}</SelectItem>
           {Object.entries(DISTRICTS).map(([code, label]) => (
             <SelectItem key={code} value={code}>

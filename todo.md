@@ -25,3 +25,5 @@
 - [x] Geocode all 52 service locations via Nominatim and update DB
 - [x] Add custom truck-coloured pin markers to Leaflet map with popups
 - [x] Change default date filter from "today → +30 days" to "today → today"
+- [x] Map: make no-service districts fully transparent (no green fill)
+- [x] FilterBar: fix dropdown z-index so it renders above the Leaflet map layer
