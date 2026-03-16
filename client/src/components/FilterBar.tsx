@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, X } from "lucide-react";
+import { X } from "lucide-react";
 import { DISTRICTS } from "../../../shared/districts";
 import { useLang } from "../contexts/LanguageContext";
 
@@ -13,6 +13,8 @@ interface FilterBarProps {
   onDateFromChange: (v: string) => void;
   onDateToChange: (v: string) => void;
   onReset: () => void;
+  onSetWeek: () => void;
+  onSetMonth: () => void;
 }
 
 export default function FilterBar({
@@ -23,6 +25,8 @@ export default function FilterBar({
   onDateFromChange,
   onDateToChange,
   onReset,
+  onSetWeek,
+  onSetMonth,
 }: FilterBarProps) {
   const { lang, t } = useLang();
 
@@ -68,11 +72,29 @@ export default function FilterBar({
         />
       </div>
 
-      {/* Reset */}
-      <Button variant="ghost" size="sm" onClick={onReset} className="h-8 px-2 text-xs gap-1">
-        <X className="h-3.5 w-3.5" />
-        {t("重設", "Reset")}
-      </Button>
+      {/* Quick filters */}
+      <div className="flex items-center gap-1">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onSetWeek}
+          className="h-8 px-2.5 text-xs"
+        >
+          {t("本週", "1 Week")}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onSetMonth}
+          className="h-8 px-2.5 text-xs"
+        >
+          {t("本月", "1 Month")}
+        </Button>
+        <Button variant="ghost" size="sm" onClick={onReset} className="h-8 px-2 text-xs gap-1">
+          <X className="h-3.5 w-3.5" />
+          {t("重設", "Reset")}
+        </Button>
+      </div>
     </div>
   );
 }

@@ -27,3 +27,5 @@
 - [x] Change default date filter from "today → +30 days" to "today → today"
 - [x] Map: make no-service districts fully transparent (no green fill)
 - [x] FilterBar: fix dropdown z-index so it renders above the Leaflet map layer
+- [x] FilterBar: add "本週 +7日" and "本月 +30日" quick-filter buttons next to 重設
+- [x] Schedule panel: show all schedules matching the full date filter range (not just today)

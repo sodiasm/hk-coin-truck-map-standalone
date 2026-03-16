@@ -13,6 +13,8 @@ interface SchedulePanelProps {
   selectedDistrict: string | null;
   onClearDistrict: () => void;
   todayStr: string;
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 function formatDate(dateStr: string, lang: "tc" | "en") {
@@ -36,14 +38,18 @@ function isUpcoming(s: TruckSchedule, today: string) {
   return s.dateFrom > today;
 }
 
-export default function SchedulePanel({ schedules, selectedDistrict, onClearDistrict, todayStr }: SchedulePanelProps) {
+export default function SchedulePanel({ schedules, selectedDistrict, onClearDistrict, todayStr, dateFrom, dateTo }: SchedulePanelProps) {
   const { lang, t } = useLang();
 
   const filtered = useMemo(() => {
-    let list = schedules.filter(s => s.dateTo >= todayStr);
+    const from = dateFrom ?? todayStr;
+    const to = dateTo ?? todayStr;
+    // Keep schedules that overlap with the selected date range:
+    // schedule overlaps if dateFrom <= to AND dateTo >= from
+    let list = schedules.filter(s => s.dateFrom <= to && s.dateTo >= from);
     if (selectedDistrict) list = list.filter(s => s.districtCode === selectedDistrict);
     return list.sort((a, b) => a.dateFrom.localeCompare(b.dateFrom));
-  }, [schedules, selectedDistrict, todayStr]);
+  }, [schedules, selectedDistrict, todayStr, dateFrom, dateTo]);
 
   const districtLabel = selectedDistrict
     ? (lang === "tc" ? DISTRICTS[selectedDistrict]?.tc : DISTRICTS[selectedDistrict]?.en) ?? selectedDistrict

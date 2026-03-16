@@ -41,6 +41,20 @@ export default function Home() {
     setDateTo(TODAY);
   };
 
+  const handleSetWeek = () => {
+    const end = new Date();
+    end.setDate(end.getDate() + 6);
+    setDateFrom(TODAY);
+    setDateTo(end.toISOString().slice(0, 10));
+  };
+
+  const handleSetMonth = () => {
+    const end = new Date();
+    end.setDate(end.getDate() + 29);
+    setDateFrom(TODAY);
+    setDateTo(end.toISOString().slice(0, 10));
+  };
+
   return (
     <div className="flex flex-col h-screen bg-background overflow-hidden">
       {/* ── Top Nav ── */}
@@ -103,6 +117,8 @@ export default function Home() {
         onDateFromChange={setDateFrom}
         onDateToChange={setDateTo}
         onReset={handleReset}
+        onSetWeek={handleSetWeek}
+        onSetMonth={handleSetMonth}
       />
       </div>
 
@@ -184,6 +200,8 @@ export default function Home() {
             selectedDistrict={selectedDistrict}
             onClearDistrict={() => setSelectedDistrict(null)}
             todayStr={TODAY}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
           />
         </div>
       </div>
