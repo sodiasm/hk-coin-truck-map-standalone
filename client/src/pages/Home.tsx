@@ -7,15 +7,12 @@ import FilterBar from "../components/FilterBar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Loader2, Map, List, Settings } from "lucide-react";
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
 export default function Home() {
   const { lang, setLang, t } = useLang();
-  const { user } = useAuth();
-
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
   const [dateFrom, setDateFrom] = useState(TODAY);
   const [dateTo, setDateTo] = useState(TODAY);
@@ -93,15 +90,13 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Admin link (only for admins) */}
-            {user?.role === "admin" && (
-              <Link href="/admin">
-                <Button size="sm" variant="outline" className="h-7 text-xs gap-1 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 bg-transparent">
-                  <Settings className="h-3.5 w-3.5" />
-                  {t("管理", "Admin")}
-                </Button>
-              </Link>
-            )}
+            {/* Admin link — access is protected by ADMIN_TOKEN on the admin page */}
+            <Link href="/admin">
+              <Button size="sm" variant="outline" className="h-7 text-xs gap-1 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 bg-transparent">
+                <Settings className="h-3.5 w-3.5" />
+                {t("管理", "Admin")}
+              </Button>
+            </Link>
           </div>
         </div>
       </header>

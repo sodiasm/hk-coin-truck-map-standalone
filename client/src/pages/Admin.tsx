@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { useLang } from "../contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,17 +50,25 @@ const EMPTY_FORM: ScheduleForm = {
 };
 
 export default function Admin() {
-  const { user, loading } = useAuth();
   const { lang, t } = useLang();
   const utils = trpc.useUtils();
 
+  const [token, setToken] = useState(() => sessionStorage.getItem("admin_token") ?? "");
+  const [tokenInput, setTokenInput] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<ScheduleForm>(EMPTY_FORM);
   const [filterTruck, setFilterTruck] = useState<string>("all");
 
-  const { data: schedules, isLoading } = trpc.schedules.all.useQuery();
+  const isAuthenticated = Boolean(token);
+
+  const { data: schedules, isLoading } = trpc.schedules.all.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  // Pass token as header for all admin mutations via tRPC
+  const adminHeaders = { "x-admin-token": token };
 
   const createMutation = trpc.admin.createSchedule.useMutation({
     onSuccess: () => {
@@ -93,25 +100,51 @@ export default function Admin() {
     onError: (e: { message: string }) => toast.error(e.message),
   });
 
-  if (loading) {
+  if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!user || user.role !== "admin") {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <Truck className="h-12 w-12 text-muted-foreground opacity-40" />
-        <p className="text-muted-foreground">{t("此頁面只限管理員使用", "This page is for admins only")}</p>
-        <Link href="/">
-          <Button variant="outline" className="gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            {t("返回地圖", "Back to Map")}
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-background px-4">
+        <div className="w-full max-w-sm space-y-4">
+          <div className="text-center space-y-2">
+            <Truck className="h-10 w-10 text-primary mx-auto" />
+            <h2 className="text-lg font-semibold">{t("管理員登入", "Admin Access")}</h2>
+            <p className="text-sm text-muted-foreground">{t("請輸入管理密鑰", "Enter your admin token to continue")}</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="token-input">{t("管理密鑰", "Admin Token")}</Label>
+            <Input
+              id="token-input"
+              type="password"
+              placeholder="ADMIN_TOKEN"
+              value={tokenInput}
+              onChange={(e) => setTokenInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && tokenInput) {
+                  sessionStorage.setItem("admin_token", tokenInput);
+                  setToken(tokenInput);
+                }
+              }}
+            />
+          </div>
+          <Button
+            className="w-full"
+            onClick={() => {
+              if (tokenInput) {
+                sessionStorage.setItem("admin_token", tokenInput);
+                setToken(tokenInput);
+              }
+            }}
+          >
+            {t("登入", "Enter")}
           </Button>
-        </Link>
+          <div className="text-center">
+            <Link href="/">
+              <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+                <ArrowLeft className="h-4 w-4" />
+                {t("返回地圖", "Back to Map")}
+              </Button>
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }

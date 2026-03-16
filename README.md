@@ -20,7 +20,7 @@ An interactive public service map showing the Hong Kong Monetary Authority (HKMA
 | Frontend | React 19, Tailwind CSS 4, Leaflet.js, shadcn/ui |
 | Backend | Express 4, tRPC 11, Drizzle ORM |
 | Database | MySQL (TiDB compatible) |
-| Auth | Manus OAuth |
+| Auth | Token-based (ADMIN_TOKEN env var) |
 | Map data | OpenStreetMap, CSDI GeoJSON (18 districts) |
 
 ## Getting Started
@@ -48,13 +48,29 @@ pnpm dev
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | MySQL connection string |
-| `JWT_SECRET` | Session cookie signing secret |
-| `VITE_APP_ID` | Manus OAuth application ID |
-| `OAUTH_SERVER_URL` | Manus OAuth backend URL |
-| `VITE_OAUTH_PORTAL_URL` | Manus login portal URL |
+Copy `.env.example` to `.env` and fill in the values:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Yes | MySQL connection string, e.g. `mysql://user:pass@host:3306/db` |
+| `JWT_SECRET` | Yes | Random 32-byte hex string for cookie signing |
+| `ADMIN_TOKEN` | Yes | Secret token to access the `/admin` panel |
+| `NODE_ENV` | No | Set to `production` in deployment |
+| `PORT` | No | Server port (default: 3000; Zeabur injects automatically) |
+
+## Deploying to Zeabur
+
+1. Push this repo to GitHub.
+2. Create a new project on [Zeabur](https://zeabur.com).
+3. Add a **MySQL** service (or connect PlanetScale via `DATABASE_URL`).
+4. Add a **Node.js** service pointing to this repo.
+5. Set the three required environment variables in the Zeabur dashboard: `DATABASE_URL`, `JWT_SECRET`, `ADMIN_TOKEN`.
+6. Zeabur will auto-detect `zeabur.json` and run `pnpm install && pnpm build` then `node dist/index.js`.
+7. After first deploy, run the seed script once: `node server/seed.mjs`.
+
+## Admin Access
+
+Navigate to `/admin` and enter your `ADMIN_TOKEN` value. The token is stored in `sessionStorage` for the browser session — closing the tab clears it.
 
 ## Data Sources
 
