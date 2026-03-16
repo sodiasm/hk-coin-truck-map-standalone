@@ -194,7 +194,7 @@ export default function Home() {
         </div>
 
         {/* Schedule panel */}
-        <div className={`w-full sm:w-80 lg:w-96 border-l bg-card flex flex-col overflow-hidden ${mobileView === "map" ? "hidden sm:flex" : "flex"}`}>
+        <div className={`w-full sm:w-80 lg:w-96 border-l bg-card flex flex-col overflow-hidden min-h-0 ${mobileView === "map" ? "hidden sm:flex" : "flex"}`}>
           <SchedulePanel
             schedules={displaySchedules}
             selectedDistrict={selectedDistrict}

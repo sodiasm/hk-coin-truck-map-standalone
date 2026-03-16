@@ -3,7 +3,7 @@ import type { TruckSchedule } from "../../../drizzle/schema";
 import { TRUCK_COLORS, TRUCK_LABELS, SERVICE_HOURS, LCSD_NOTE, DISTRICTS } from "../../../shared/districts";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// ScrollArea replaced with native scroll for reliable mouse-wheel support
 import { CalendarDays, Clock, MapPin, BookOpen, X, Truck } from "lucide-react";
 import { useLang } from "../contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -59,7 +59,7 @@ export default function SchedulePanel({ schedules, selectedDistrict, onClearDist
     s.locationNameTc.includes("暫停") || s.locationNameEn?.includes("Suspended");
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Header */}
       <div className="px-4 py-3 border-b bg-card flex items-center justify-between gap-2 shrink-0">
         <div>
@@ -91,8 +91,8 @@ export default function SchedulePanel({ schedules, selectedDistrict, onClearDist
         ))}
       </div>
 
-      {/* List */}
-      <ScrollArea className="flex-1">
+      {/* List — native overflow scroll for reliable mouse-wheel support */}
+      <div className="flex-1 min-h-0 overflow-y-auto">
         <div className="p-3 space-y-2">
           {filtered.length === 0 && (
             <div className="text-center py-8 text-muted-foreground text-sm">
@@ -192,7 +192,7 @@ export default function SchedulePanel({ schedules, selectedDistrict, onClearDist
             {lang === "tc" ? LCSD_NOTE.tc : LCSD_NOTE.en}
           </div>
         )}
-      </ScrollArea>
+      </div>
     </div>
   );
 }

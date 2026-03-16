@@ -29,3 +29,4 @@
 - [x] FilterBar: fix dropdown z-index so it renders above the Leaflet map layer
 - [x] FilterBar: add "本週 +7日" and "本月 +30日" quick-filter buttons next to 重設
 - [x] Schedule panel: show all schedules matching the full date filter range (not just today)
+- [x] Fix schedule panel scroll: Radix ScrollArea mouse wheel not working
