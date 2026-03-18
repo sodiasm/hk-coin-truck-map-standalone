@@ -9,7 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { Loader2, Map, List, Settings } from "lucide-react";
 
-const TODAY = new Date().toISOString().slice(0, 10);
+const TODAY = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Hong_Kong",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+}).format(new Date()); // returns "YYYY-MM-DD" in HKT
 
 export default function Home() {
   const { lang, setLang, t } = useLang();
