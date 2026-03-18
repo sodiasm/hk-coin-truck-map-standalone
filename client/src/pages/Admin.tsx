@@ -55,6 +55,7 @@ export default function Admin() {
 
   const [token, setToken] = useState(() => sessionStorage.getItem("admin_token") ?? "");
   const [tokenInput, setTokenInput] = useState("");
+  const [tokenError, setTokenError] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -63,12 +64,26 @@ export default function Admin() {
 
   const isAuthenticated = Boolean(token);
 
-  const { data: schedules, isLoading } = trpc.schedules.all.useQuery(undefined, {
+  // Use the admin-gated endpoint so the server enforces the token check.
+  // If the token is wrong the query will fail with FORBIDDEN and the table
+  // will remain empty — the public schedules.all endpoint is intentionally
+  // NOT used here.
+  const { data: schedules, isLoading, error: schedulesError } = trpc.admin.listAll.useQuery(undefined, {
     enabled: isAuthenticated,
+    retry: false,
   });
+
+  // If the server rejects the token (FORBIDDEN), clear the stored token so
+  // the user is sent back to the login screen.
+  if (schedulesError && (schedulesError.data?.code === "FORBIDDEN" || schedulesError.message?.includes("FORBIDDEN"))) {
+    sessionStorage.removeItem("admin_token");
+    setToken("");
+    setTokenError(true);
+  }
 
   const createMutation = trpc.admin.createSchedule.useMutation({
     onSuccess: () => {
+      utils.admin.listAll.invalidate();
       utils.schedules.all.invalidate();
       utils.schedules.byDateRange.invalidate();
       toast.success(t("已新增服務記錄", "Schedule created"));
@@ -79,6 +94,7 @@ export default function Admin() {
 
   const updateMutation = trpc.admin.updateSchedule.useMutation({
     onSuccess: () => {
+      utils.admin.listAll.invalidate();
       utils.schedules.all.invalidate();
       utils.schedules.byDateRange.invalidate();
       toast.success(t("已更新服務記錄", "Schedule updated"));
@@ -89,6 +105,7 @@ export default function Admin() {
 
   const deleteMutation = trpc.admin.deleteSchedule.useMutation({
     onSuccess: () => {
+      utils.admin.listAll.invalidate();
       utils.schedules.all.invalidate();
       utils.schedules.byDateRange.invalidate();
       toast.success(t("已刪除服務記錄", "Schedule deleted"));
@@ -113,14 +130,21 @@ export default function Admin() {
               type="password"
               placeholder="ADMIN_TOKEN"
               value={tokenInput}
-              onChange={(e) => setTokenInput(e.target.value)}
+              className={tokenError ? "border-destructive focus-visible:ring-destructive" : ""}
+              onChange={(e) => { setTokenInput(e.target.value); setTokenError(false); }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && tokenInput) {
                   sessionStorage.setItem("admin_token", tokenInput);
                   setToken(tokenInput);
+                  setTokenError(false);
                 }
               }}
             />
+            {tokenError && (
+              <p className="text-xs text-destructive mt-1">
+                {t("管理密鑰不正確，請重試。", "Incorrect admin token. Please try again.")}
+              </p>
+            )}
           </div>
           <Button
             className="w-full"
@@ -128,6 +152,7 @@ export default function Admin() {
               if (tokenInput) {
                 sessionStorage.setItem("admin_token", tokenInput);
                 setToken(tokenInput);
+                setTokenError(false);
               }
             }}
           >
