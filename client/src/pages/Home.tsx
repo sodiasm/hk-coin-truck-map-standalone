@@ -204,10 +204,10 @@ export default function Home() {
       {/* ── Footer ── */}
       <footer className="shrink-0 border-t bg-card px-4 py-2 flex items-center justify-between text-xs text-muted-foreground">
         <span>
-          {t("資料來源：香港金融管理局", "Source: Hong Kong Monetary Authority")}
+          {t("資料來源：香港金融管理局收銀車日程表", "Source: Hong Kong Monetary Authority Coin Cart Schedule (From 2026) Service hours")}
           {" · "}
           <a
-            href="https://www.hkma.gov.hk/chi/key-functions/monetary-stability/notes-and-coins/coin-collection-truck/"
+            href="https://www.hkma.gov.hk/media/chi/doc/key-functions/monetary-stability/notes-and-coins/chi_coin_collection.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-primary"
