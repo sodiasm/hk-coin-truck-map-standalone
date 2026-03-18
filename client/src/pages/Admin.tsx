@@ -67,9 +67,6 @@ export default function Admin() {
     enabled: isAuthenticated,
   });
 
-  // Pass token as header for all admin mutations via tRPC
-  const adminHeaders = { "x-admin-token": token };
-
   const createMutation = trpc.admin.createSchedule.useMutation({
     onSuccess: () => {
       utils.schedules.all.invalidate();
