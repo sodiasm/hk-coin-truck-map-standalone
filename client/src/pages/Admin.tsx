@@ -31,6 +31,8 @@ type ScheduleForm = {
   isLcsdLibrary: boolean;
   notesTc: string;
   notesEn: string;
+  lat: string;
+  lng: string;
 };
 
 const EMPTY_FORM: ScheduleForm = {
@@ -47,6 +49,8 @@ const EMPTY_FORM: ScheduleForm = {
   isLcsdLibrary: false,
   notesTc: "",
   notesEn: "",
+  lat: "",
+  lng: "",
 };
 
 export default function Admin() {
@@ -193,11 +197,15 @@ export default function Admin() {
       isLcsdLibrary: s.isLcsdLibrary ?? false,
       notesTc: s.notesTc ?? "",
       notesEn: s.notesEn ?? "",
+      lat: s.lat != null ? String(s.lat) : "",
+      lng: s.lng != null ? String(s.lng) : "",
     });
     setDialogOpen(true);
   };
 
   const handleSubmit = () => {
+    const parsedLat = form.lat !== "" ? parseFloat(form.lat) : null;
+    const parsedLng = form.lng !== "" ? parseFloat(form.lng) : null;
     const payload = {
       truckNumber: form.truckNumber,
       districtCode: form.districtCode,
@@ -212,6 +220,8 @@ export default function Admin() {
       isLcsdLibrary: form.isLcsdLibrary,
       notesTc: form.notesTc || null,
       notesEn: form.notesEn || null,
+      lat: parsedLat,
+      lng: parsedLng,
     };
     if (editingId) {
       updateMutation.mutate({ id: editingId, ...payload });
@@ -292,6 +302,7 @@ export default function Admin() {
                   <TableHead className="min-w-[200px]">{t("地點", "Location")}</TableHead>
                   <TableHead>{t("日期", "Dates")}</TableHead>
                   <TableHead className="w-16">{t("特別", "Special")}</TableHead>
+                  <TableHead className="w-12 text-center">{t("GPS", "GPS")}</TableHead>
                   <TableHead className="w-20 text-right">{t("操作", "Actions")}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -333,6 +344,13 @@ export default function Admin() {
                         <Badge variant="outline" className="text-[10px] px-1 text-amber-600 border-amber-300">
                           {t("圖書館", "Library")}
                         </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {s.lat != null && s.lng != null ? (
+                        <span className="text-[10px] text-green-600 font-mono" title={`${s.lat}, ${s.lng}`}>✓</span>
+                      ) : (
+                        <span className="text-[10px] text-muted-foreground">–</span>
                       )}
                     </TableCell>
                     <TableCell className="text-right">
@@ -434,6 +452,32 @@ export default function Admin() {
             <div className="space-y-1">
               <Label className="text-xs">{t("備注（英文）", "Notes (English)")}</Label>
               <Input className="h-8 text-xs" value={form.notesEn} onChange={e => setForm(f => ({ ...f, notesEn: e.target.value }))} />
+            </div>
+
+            {/* Coordinates */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">{t("緯度 (Latitude)", "Latitude")}</Label>
+                <Input
+                  className="h-8 text-xs"
+                  type="number"
+                  step="any"
+                  placeholder="e.g. 22.2855"
+                  value={form.lat}
+                  onChange={e => setForm(f => ({ ...f, lat: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">{t("經度 (Longitude)", "Longitude")}</Label>
+                <Input
+                  className="h-8 text-xs"
+                  type="number"
+                  step="any"
+                  placeholder="e.g. 114.1577"
+                  value={form.lng}
+                  onChange={e => setForm(f => ({ ...f, lng: e.target.value }))}
+                />
+              </div>
             </div>
 
             {/* LCSD checkbox */}

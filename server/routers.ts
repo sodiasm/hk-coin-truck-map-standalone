@@ -31,6 +31,8 @@ const scheduleInput = z.object({
   isLcsdLibrary: z.boolean().default(false),
   notesTc: z.string().optional().nullable(),
   notesEn: z.string().optional().nullable(),
+  lat: z.number().optional().nullable(),
+  lng: z.number().optional().nullable(),
 });
 
 // ─── Router ───────────────────────────────────────────────────────────────────
