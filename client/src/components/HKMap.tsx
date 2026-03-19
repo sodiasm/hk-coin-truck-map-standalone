@@ -123,16 +123,18 @@ interface HKMapProps {
   onDistrictClick: (code: string) => void;
   lang: "tc" | "en";
   todayStr: string;
+  userLocation?: { lat: number; lng: number; accuracy: number } | null;
 }
 
 // Truck colours matching the rest of the UI
 const TRUCK_PIN_COLORS: Record<number, string> = { 1: "#2563eb", 2: "#d97706" };
 
-export default function HKMap({ schedules, selectedDistrict, onDistrictClick, lang, todayStr }: HKMapProps) {
+export default function HKMap({ schedules, selectedDistrict, onDistrictClick, lang, todayStr, userLocation }: HKMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMap = useRef<L.Map | null>(null);
   const geoLayerRef = useRef<L.GeoJSON | null>(null);
   const markerLayerRef = useRef<L.LayerGroup | null>(null);
+  const userMarkerRef = useRef<L.LayerGroup | null>(null);
   const patternsInjected = useRef(false);
 
   const districtStatuses = computeDistrictStatuses(schedules, todayStr);
@@ -292,6 +294,46 @@ export default function HKMap({ schedules, selectedDistrict, onDistrictClick, la
       L.marker([s.lat, s.lng], { icon }).bindPopup(popup).addTo(markerLayer);
     }
   }, [schedules, todayStr, lang]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── User location marker ────────────────────────────────────────────────
+  useEffect(() => {
+    const map = leafletMap.current;
+    if (!map) return;
+
+    // Clear previous user location layers
+    if (userMarkerRef.current) {
+      userMarkerRef.current.remove();
+      userMarkerRef.current = null;
+    }
+
+    if (!userLocation) return;
+
+    const { lat, lng, accuracy } = userLocation;
+    const group = L.layerGroup().addTo(map);
+
+    // Accuracy circle
+    L.circle([lat, lng], {
+      radius: accuracy,
+      color: "#3b82f6",
+      fillColor: "#93c5fd",
+      fillOpacity: 0.15,
+      weight: 1,
+    }).addTo(group);
+
+    // Dot marker
+    L.circleMarker([lat, lng], {
+      radius: 10,
+      color: "#fff",
+      weight: 2,
+      fillColor: "#2563eb",
+      fillOpacity: 1,
+    })
+      .bindPopup("\uD83D\uDCCD Your location")
+      .addTo(group);
+
+    userMarkerRef.current = group;
+    map.flyTo([lat, lng], Math.max(map.getZoom(), 13), { animate: true, duration: 1 });
+  }, [userLocation]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return <div ref={mapRef} className="w-full h-full rounded-lg overflow-hidden" />;
 }

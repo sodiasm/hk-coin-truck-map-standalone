@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { useLang } from "../contexts/LanguageContext";
 import HKMap from "../components/HKMap";
@@ -7,7 +7,9 @@ import FilterBar from "../components/FilterBar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { Loader2, Map, List, Settings } from "lucide-react";
+import { Loader2, Map, List, Settings, LocateFixed } from "lucide-react";
+import { useGeolocation } from "../hooks/useGeolocation";
+import { toast } from "sonner";
 
 const TODAY = new Intl.DateTimeFormat("en-CA", {
   timeZone: "Asia/Hong_Kong",
@@ -22,6 +24,26 @@ export default function Home() {
   const [dateFrom, setDateFrom] = useState(TODAY);
   const [dateTo, setDateTo] = useState(TODAY);
   const [mobileView, setMobileView] = useState<"map" | "list">("map");
+
+  // Geolocation
+  const { state: geoState, locate } = useGeolocation();
+
+  const userLocation =
+    geoState.status === "success"
+      ? { lat: geoState.lat, lng: geoState.lng, accuracy: geoState.accuracy }
+      : null;
+
+  // Surface geolocation errors via toast
+  useEffect(() => {
+    if (geoState.status === "error") {
+      toast.error(
+        t(
+          `無法取得位置：${geoState.message}`,
+          `Could not get location: ${geoState.message}`
+        )
+      );
+    }
+  }, [geoState]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch all schedules (for map coloring)
   const { data: allSchedules, isLoading } = trpc.schedules.all.useQuery();
@@ -159,7 +181,32 @@ export default function Home() {
               onDistrictClick={(code) => setSelectedDistrict(prev => prev === code ? null : code)}
               lang={lang}
               todayStr={TODAY}
+              userLocation={userLocation}
             />
+          </div>
+
+          {/* My Location button — floats above map, below legend */}
+          <div className="absolute top-4 right-4 z-[1000]">
+            <Button
+              size="sm"
+              variant="outline"
+              aria-label={t("顯示我的位置", "Show my location")}
+              onClick={locate}
+              disabled={geoState.status === "loading"}
+              className="h-8 text-xs gap-1.5 bg-white/90 backdrop-blur-sm shadow-md border hover:bg-white"
+            >
+              {geoState.status === "loading" ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  {t("定位中…", "Locating…")}
+                </>
+              ) : (
+                <>
+                  <LocateFixed className={`h-3.5 w-3.5 ${geoState.status === "success" ? "text-blue-600" : ""}`} />
+                  {t("我的位置", "My Location")}
+                </>
+              )}
+            </Button>
           </div>
 
           {/* Map legend */}
