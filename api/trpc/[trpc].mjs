@@ -1,12 +1,3 @@
-
-// Polyfill __dirname and __filename for ESM
-import { createRequire } from 'module';
-import { fileURLToPath as _fileURLToPath } from 'url';
-import { dirname as _dirname } from 'path';
-const __filename = _fileURLToPath(import.meta.url);
-const __dirname = _dirname(__filename);
-const require = createRequire(import.meta.url);
-
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -17495,7 +17486,7 @@ function createFetchContext({ req }) {
   return { isAdmin };
 }
 
-// api/trpc/[trpc].ts
+// src/api/trpc-handler.ts
 async function handler(req) {
   return fetchRequestHandler({
     endpoint: "/api/trpc",
