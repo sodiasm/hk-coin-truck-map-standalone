@@ -12,9 +12,16 @@ export default async function handler(
   const requestToken = (req.headers["x-admin-token"] as string) ?? "";
   const isAdmin = adminToken.length > 0 && requestToken === adminToken;
 
+  // Extract the tRPC path from the URL
+  // req.url is like /api/trpc/schedules.all?batch=1&input=...
+  // We need to strip the /api/trpc/ prefix to get the procedure path
+  const url = req.url ?? "";
+  const trpcPath = url.replace(/^\/api\/trpc\//, "").split("?")[0];
+
   return nodeHTTPRequestHandler({
     req,
     res,
+    path: trpcPath,
     router: appRouter,
     createContext: async () => ({ isAdmin }),
     onError: ({ path, error }) => {

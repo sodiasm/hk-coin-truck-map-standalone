@@ -17618,9 +17618,12 @@ async function handler(req, res) {
   const adminToken = process.env.ADMIN_TOKEN ?? "";
   const requestToken = req.headers["x-admin-token"] ?? "";
   const isAdmin = adminToken.length > 0 && requestToken === adminToken;
+  const url2 = req.url ?? "";
+  const trpcPath = url2.replace(/^\/api\/trpc\//, "").split("?")[0];
   return nodeHTTPRequestHandler({
     req,
     res,
+    path: trpcPath,
     router: appRouter,
     createContext: async () => ({ isAdmin }),
     onError: ({ path, error: error46 }) => {
