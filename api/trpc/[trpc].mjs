@@ -16671,26 +16671,50 @@ async function supabaseQuery(path, options) {
   const text = await resp.text();
   return text ? JSON.parse(text) : null;
 }
+function snakeToCamel(str) {
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+function toCamelCase(obj) {
+  const result = {};
+  for (const [key, value] of Object.entries(obj)) {
+    result[snakeToCamel(key)] = value;
+  }
+  return result;
+}
+function toSnakeCase(obj) {
+  const result = {};
+  for (const [key, value] of Object.entries(obj)) {
+    const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+    result[snakeKey] = value;
+  }
+  return result;
+}
 async function getAllSchedules() {
-  return supabaseQuery(`${TABLE}?order=date_from.asc`);
+  const rows = await supabaseQuery(`${TABLE}?order=date_from.asc`);
+  return (rows ?? []).map(toCamelCase);
 }
 async function getUpcomingSchedules(fromDate) {
-  return supabaseQuery(`${TABLE}?date_to=gte.${fromDate}&order=date_from.asc`);
+  const rows = await supabaseQuery(`${TABLE}?date_to=gte.${fromDate}&order=date_from.asc`);
+  return (rows ?? []).map(toCamelCase);
 }
 async function getSchedulesByDistrict(districtCode) {
-  return supabaseQuery(`${TABLE}?district_code=eq.${encodeURIComponent(districtCode)}&order=date_from.asc`);
+  const rows = await supabaseQuery(`${TABLE}?district_code=eq.${encodeURIComponent(districtCode)}&order=date_from.asc`);
+  return (rows ?? []).map(toCamelCase);
 }
 async function getSchedulesByDateRange(dateFrom, dateTo) {
-  return supabaseQuery(
+  const rows = await supabaseQuery(
     `${TABLE}?date_from=lte.${dateTo}&date_to=gte.${dateFrom}&order=date_from.asc`
   );
+  return (rows ?? []).map(toCamelCase);
 }
 async function getSchedulesByTruck(truckNumber) {
-  return supabaseQuery(`${TABLE}?truck_number=eq.${truckNumber}&order=date_from.asc`);
+  const rows = await supabaseQuery(`${TABLE}?truck_number=eq.${truckNumber}&order=date_from.asc`);
+  return (rows ?? []).map(toCamelCase);
 }
 async function getScheduleById(id) {
   const results = await supabaseQuery(`${TABLE}?id=eq.${id}&limit=1`);
-  return results?.[0];
+  const row = results?.[0];
+  return row ? toCamelCase(row) : void 0;
 }
 async function insertSchedule(data) {
   await supabaseQuery(TABLE, {
@@ -16713,7 +16737,7 @@ async function bulkInsertSchedules(data) {
   for (let i = 0; i < data.length; i += 50) {
     await supabaseQuery(TABLE, {
       method: "POST",
-      body: JSON.stringify(data.slice(i, i + 50).map(toSnakeCase))
+      body: JSON.stringify(data.slice(i, i + 50).map((d) => toSnakeCase(d)))
     });
   }
 }
@@ -16731,14 +16755,6 @@ async function countSchedules() {
   }
   const data = await resp.json();
   return Array.isArray(data) ? data.length : 0;
-}
-function toSnakeCase(obj) {
-  const result = {};
-  for (const [key, value] of Object.entries(obj)) {
-    const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
-    result[snakeKey] = value;
-  }
-  return result;
 }
 
 // server/routers.ts

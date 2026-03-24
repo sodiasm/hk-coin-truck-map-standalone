@@ -33,21 +33,60 @@ async function supabaseQuery(path: string, options?: RequestInit): Promise<any> 
   return text ? JSON.parse(text) : null;
 }
 
+// ─── Case conversion helpers ─────────────────────────────────────────────────
+
+/**
+ * Convert a snake_case string to camelCase.
+ * e.g. "truck_number" → "truckNumber"
+ */
+function snakeToCamel(str: string): string {
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+/**
+ * Convert all keys of an object from snake_case to camelCase.
+ * Supabase PostgREST returns raw PostgreSQL column names (snake_case),
+ * but the TypeScript TruckSchedule type uses camelCase (from Drizzle ORM).
+ */
+function toCamelCase(obj: Record<string, any>): Record<string, any> {
+  const result: Record<string, any> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    result[snakeToCamel(key)] = value;
+  }
+  return result;
+}
+
+/**
+ * Convert all keys of an object from camelCase to snake_case.
+ * Used when writing data to Supabase.
+ */
+function toSnakeCase(obj: Record<string, any>): Record<string, any> {
+  const result: Record<string, any> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+    result[snakeKey] = value;
+  }
+  return result;
+}
+
 // ─── Truck Schedule helpers ─────────────────────────────────────────────────
 
 /** Return all schedules, ordered by date_from ascending */
 export async function getAllSchedules(): Promise<TruckSchedule[]> {
-  return supabaseQuery(`${TABLE}?order=date_from.asc`);
+  const rows = await supabaseQuery(`${TABLE}?order=date_from.asc`);
+  return (rows ?? []).map(toCamelCase) as TruckSchedule[];
 }
 
 /** Return schedules active on or after a given date */
 export async function getUpcomingSchedules(fromDate: string): Promise<TruckSchedule[]> {
-  return supabaseQuery(`${TABLE}?date_to=gte.${fromDate}&order=date_from.asc`);
+  const rows = await supabaseQuery(`${TABLE}?date_to=gte.${fromDate}&order=date_from.asc`);
+  return (rows ?? []).map(toCamelCase) as TruckSchedule[];
 }
 
 /** Return schedules for a specific district code */
 export async function getSchedulesByDistrict(districtCode: string): Promise<TruckSchedule[]> {
-  return supabaseQuery(`${TABLE}?district_code=eq.${encodeURIComponent(districtCode)}&order=date_from.asc`);
+  const rows = await supabaseQuery(`${TABLE}?district_code=eq.${encodeURIComponent(districtCode)}&order=date_from.asc`);
+  return (rows ?? []).map(toCamelCase) as TruckSchedule[];
 }
 
 /** Return schedules within a date range */
@@ -55,27 +94,30 @@ export async function getSchedulesByDateRange(
   dateFrom: string,
   dateTo: string
 ): Promise<TruckSchedule[]> {
-  return supabaseQuery(
+  const rows = await supabaseQuery(
     `${TABLE}?date_from=lte.${dateTo}&date_to=gte.${dateFrom}&order=date_from.asc`
   );
+  return (rows ?? []).map(toCamelCase) as TruckSchedule[];
 }
 
 /** Return schedules for a specific truck number */
 export async function getSchedulesByTruck(truckNumber: number): Promise<TruckSchedule[]> {
-  return supabaseQuery(`${TABLE}?truck_number=eq.${truckNumber}&order=date_from.asc`);
+  const rows = await supabaseQuery(`${TABLE}?truck_number=eq.${truckNumber}&order=date_from.asc`);
+  return (rows ?? []).map(toCamelCase) as TruckSchedule[];
 }
 
 /** Get a single schedule by ID */
 export async function getScheduleById(id: number): Promise<TruckSchedule | undefined> {
   const results = await supabaseQuery(`${TABLE}?id=eq.${id}&limit=1`);
-  return results?.[0];
+  const row = results?.[0];
+  return row ? (toCamelCase(row) as TruckSchedule) : undefined;
 }
 
 /** Insert a new schedule */
 export async function insertSchedule(data: InsertTruckSchedule): Promise<void> {
   await supabaseQuery(TABLE, {
     method: "POST",
-    body: JSON.stringify(toSnakeCase(data)),
+    body: JSON.stringify(toSnakeCase(data as Record<string, any>)),
   });
 }
 
@@ -86,7 +128,7 @@ export async function updateSchedule(
 ): Promise<void> {
   await supabaseQuery(`${TABLE}?id=eq.${id}`, {
     method: "PATCH",
-    body: JSON.stringify(toSnakeCase(data)),
+    body: JSON.stringify(toSnakeCase(data as Record<string, any>)),
   });
 }
 
@@ -103,7 +145,7 @@ export async function bulkInsertSchedules(data: InsertTruckSchedule[]): Promise<
   for (let i = 0; i < data.length; i += 50) {
     await supabaseQuery(TABLE, {
       method: "POST",
-      body: JSON.stringify(data.slice(i, i + 50).map(toSnakeCase)),
+      body: JSON.stringify(data.slice(i, i + 50).map(d => toSnakeCase(d as Record<string, any>))),
     });
   }
 }
@@ -123,14 +165,4 @@ export async function countSchedules(): Promise<number> {
   }
   const data = await resp.json();
   return Array.isArray(data) ? data.length : 0;
-}
-
-// ─── Helper: convert camelCase to snake_case for Supabase ────────────────────
-function toSnakeCase(obj: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = {};
-  for (const [key, value] of Object.entries(obj)) {
-    const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
-    result[snakeKey] = value;
-  }
-  return result;
 }
