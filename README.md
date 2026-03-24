@@ -13,7 +13,6 @@ An interactive public service map showing the Hong Kong Monetary Authority (HKMA
 The project has been successfully migrated and deployed to a modern serverless architecture for better scalability and reliability.
 
 *   **Live Frontend (Vercel):** [https://hk-coin-truck-map-standalone.vercel.app](https://hk-coin-truck-map-standalone.vercel.app)
-*   **Backend Database (Supabase):** `jsmnutbliuqmgdoeiogi.supabase.co`
 *   **GitHub Repository:** [https://github.com/sodiasm/hk-coin-truck-map-standalone](https://github.com/sodiasm/hk-coin-truck-map-standalone)
 
 ### Key Updates
@@ -39,7 +38,6 @@ The project has been successfully migrated and deployed to a modern serverless a
 本項目已成功遷移並部署至現代化的無伺服器 (Serverless) 架構，以提供更好的擴展性和穩定性。
 
 *   **前端展示 (Vercel):** [https://hk-coin-truck-map-standalone.vercel.app](https://hk-coin-truck-map-standalone.vercel.app)
-*   **後端數據庫 (Supabase):** `jsmnutbliuqmgdoeiogi.supabase.co`
 *   **GitHub 倉庫:** [https://github.com/sodiasm/hk-coin-truck-map-standalone](https://github.com/sodiasm/hk-coin-truck-map-standalone)
 
 ### 主要更新
@@ -65,7 +63,6 @@ The project has been successfully migrated and deployed to a modern serverless a
 本项目已成功迁移并部署至现代化的无服务器 (Serverless) 架构，以提供更好的扩展性和稳定性。
 
 *   **前端展示 (Vercel):** [https://hk-coin-truck-map-standalone.vercel.app](https://hk-coin-truck-map-standalone.vercel.app)
-*   **后端数据库 (Supabase):** `jsmnutbliuqmgdoeiogi.supabase.co`
 *   **GitHub 仓库:** [https://github.com/sodiasm/hk-coin-truck-map-standalone](https://github.com/sodiasm/hk-coin-truck-map-standalone)
 
 ### 主要更新
