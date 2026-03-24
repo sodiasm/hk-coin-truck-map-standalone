@@ -15,7 +15,8 @@
   ],
   "functions": {
     "api/trpc/[trpc].ts": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "includeFiles": "node_modules/**"
     }
   }
 }
