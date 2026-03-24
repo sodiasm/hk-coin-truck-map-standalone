@@ -1,15 +1,22 @@
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import { nodeHTTPRequestHandler } from "@trpc/server/adapters/node-http";
+import type { IncomingMessage, ServerResponse } from "http";
 import { appRouter } from "../../server/routers";
-import { createFetchContext } from "../../server/_core/context";
 
-// Vercel serverless function handler using the fetch adapter
-// Uses the edge runtime which natively supports the Web Fetch API (Request/Response)
-export default async function handler(req: Request): Promise<Response> {
-  return fetchRequestHandler({
-    endpoint: "/api/trpc",
+// Vercel serverless function handler using the Node.js HTTP adapter
+// This is compatible with Vercel's Node.js serverless runtime (IncomingMessage/ServerResponse)
+export default async function handler(
+  req: IncomingMessage,
+  res: ServerResponse
+): Promise<void> {
+  const adminToken = process.env.ADMIN_TOKEN ?? "";
+  const requestToken = (req.headers["x-admin-token"] as string) ?? "";
+  const isAdmin = adminToken.length > 0 && requestToken === adminToken;
+
+  return nodeHTTPRequestHandler({
     req,
+    res,
     router: appRouter,
-    createContext: createFetchContext,
+    createContext: async () => ({ isAdmin }),
     onError: ({ path, error }) => {
       console.error(`tRPC error on ${path}:`, error);
     },
@@ -17,5 +24,5 @@ export default async function handler(req: Request): Promise<Response> {
 }
 
 export const config = {
-  runtime: "edge",
+  runtime: "nodejs20.x",
 };
