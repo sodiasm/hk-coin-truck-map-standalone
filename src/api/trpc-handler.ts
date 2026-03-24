@@ -3,7 +3,7 @@ import { appRouter } from "../../server/routers";
 import { createFetchContext } from "../../server/_core/context";
 
 // Vercel serverless function handler using the fetch adapter
-// This is compatible with Vercel's Node.js serverless runtime
+// Uses the edge runtime which natively supports the Web Fetch API (Request/Response)
 export default async function handler(req: Request): Promise<Response> {
   return fetchRequestHandler({
     endpoint: "/api/trpc",
@@ -17,5 +17,5 @@ export default async function handler(req: Request): Promise<Response> {
 }
 
 export const config = {
-  runtime: "nodejs",
+  runtime: "edge",
 };

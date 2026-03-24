@@ -17499,7 +17499,7 @@ async function handler(req) {
   });
 }
 var config2 = {
-  runtime: "nodejs"
+  runtime: "edge"
 };
 export {
   config2 as config,
